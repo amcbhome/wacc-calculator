@@ -8,8 +8,10 @@ import numpy as np
 # ──────────────────────────────────────────────
 # Page Setup
 # ──────────────────────────────────────────────
-st.set_page_config(page_title="💸 Weighted Average Cost of Capital (WACC) Calculator",
-                   layout="centered")
+st.set_page_config(
+    page_title="💸 Weighted Average Cost of Capital (WACC) Calculator",
+    layout="centered"
+)
 
 st.title("💸 Weighted Average Cost of Capital (WACC) Calculator")
 
@@ -95,10 +97,12 @@ default_data = [
 cols = ["Source", "Type", "Nominal", "Price", "Coupon", "Redeem", "Years", "Beta"]
 df = pd.DataFrame(default_data, columns=cols)
 
-# Editable data table
 st.subheader("Step 1 – Input Capital Structure")
-edited_df = st.data_editor(df, num_rows="fixed", use_container_width=True,
-                           help="Adjust any figure to see recalculated results.")
+
+# Editable data table (compatible version)
+edited_df = st.data_editor(df, num_rows="fixed", use_container_width=True)
+
+st.caption("💡 Tip: Adjust any value to see the WACC recalculate automatically.")
 
 # ──────────────────────────────────────────────
 # Step 2 – Recalculation
@@ -106,8 +110,10 @@ edited_df = st.data_editor(df, num_rows="fixed", use_container_width=True,
 df_out, wacc = recalc(edited_df, params)
 
 st.subheader("Step 2 – Calculated Costs and Weights")
-st.dataframe(df_out[["Source", "Cost_%", "Market_Value", "Weight", "Weighted_Cost_%"]],
-             use_container_width=True)
+st.dataframe(
+    df_out[["Source", "Cost_%", "Market_Value", "Weight", "Weighted_Cost_%"]],
+    use_container_width=True
+)
 
 # ──────────────────────────────────────────────
 # Step 3 – Results Summary
