@@ -1,4 +1,4 @@
-# app.py — WACC three-step data-model
+# app.py — WACC three-step data-model (with total row)
 # Author: A. McBride | GPT-5 | Oct 2025
 
 import streamlit as st
@@ -82,20 +82,29 @@ st.caption("Step 2 computes each source’s total cost and its weighted share of
 st.subheader("Step 3 – Weighted Cost Analysis and Ratios")
 
 step3 = pd.merge(step1, df2[["Source", "Weighted_Cost"]], on="Source", how="left")
-step3["Weighted_Cost_div_Cost_%"] = np.round(step3["Weighted_Cost"] / step3["Cost_%"], 4)
-st.dataframe(step3.rename(columns={
-    "Weighted_Cost_div_Cost_%": "Weighted_Cost ÷ Cost_%"
-}), use_container_width=True)
+step3["Weighted_Cost ÷ Cost_%"] = np.round(step3["Weighted_Cost"] / step3["Cost_%"], 4)
 
-# compute overall WACC as sum(weight_share × cost)
-wacc = (step3["Weighted_Cost"] / 100 * step3["Cost_%"]).sum()
-st.metric("Weighted Average Cost of Capital (WACC)", f"{wacc:.2f}%")
+# Calculate total (WACC)
+wacc_total = (step3["Weighted_Cost"] / 100 * step3["Cost_%"]).sum()
+
+# Add a bold total row
+total_row = pd.DataFrame({
+    "Source": ["**Total / WACC**"],
+    "Cost_%": [""],
+    "Weighted_Cost": [""],
+    "Weighted_Cost ÷ Cost_%": [f"**{wacc_total:.2f}%**"]
+})
+
+step3_display = pd.concat([step3, total_row], ignore_index=True)
+
+# Display with markdown formatting
+st.markdown(step3_display.to_markdown(index=False), unsafe_allow_html=True)
 
 st.markdown("""
 ---
 ### Interpretation
 **Step 1:** calculates component rates  
 **Step 2:** converts capital values to weighted costs  
-**Step 3:** relates weighted costs back to component rates and produces WACC
+**Step 3:** relates weighted costs back to component rates and totals **WACC**
 """)
 
