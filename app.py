@@ -1,6 +1,6 @@
 # app.py — Dynamic WACC Three-Step Model (with dual-column inputs + Calculate button)
 # Author: A. McBride | GPT-5 | Oct 2025
-
+from wacc_function import calculate_wacc
 import streamlit as st
 import pandas as pd
 import numpy as np
